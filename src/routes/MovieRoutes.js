@@ -4,12 +4,16 @@ const {
   getMovie,
   getMovieUrls,
   getMovieCast,
+  searchMovies,
 } = require("../controllers/movieController");
 
 const movieRouter = express.Router();
 
 // to get all the movies based on page number
 movieRouter.get("/", getMovies);
+
+// to get movies based on search titles
+movieRouter.get("/search", searchMovies);
 
 // to get details about single movie based on given id
 movieRouter.get("/:id", getMovie);

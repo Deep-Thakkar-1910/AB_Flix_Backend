@@ -32,7 +32,7 @@ const getMovies = async (req, res) => {
   } catch (err) {
     // logging the error
     console.error(err.message);
-    res.status(500).send("internal Server error");
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -65,7 +65,48 @@ const getMovie = async (req, res) => {
   } catch (err) {
     // logging the error
     console.log(err.message);
-    res.status(500).send("internal Server error");
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// handler function to get Movies based on search titles
+const searchMovies = async (req, res) => {
+  try {
+    // extracting the page number from query parameters
+    const page = req.query.page || 1;
+    const limit = 20;
+    const offset = parseInt(page - 1) * limit;
+
+    // to extract the title from query params to search for
+    const titleToGet = req.query.title;
+    const titleRegex = new RegExp(titleToGet, "i");
+
+    // to query the results using the newly created regex
+    const movies = await Movies.find(
+      { title: { $regex: titleRegex } },
+      { projection: { title: 1, bannerUrl: 1, releaseDate: 1, type: 1 } }
+    )
+      .skip(offset)
+      .limit(limit)
+      .toArray();
+
+    // to get the total number of movies found using title query
+    const totalMoviesCursor = await Movies.find(
+      { title: { $regex: titleRegex } },
+      { projection: { title: 1, bannerUrl: 1, releaseDate: 1, type: 1 } }
+    ).toArray();
+    const totalMovies = totalMoviesCursor.length;
+    const totalPages = Math.ceil(totalMovies / limit);
+
+    // if no movie is found for given title return a 404 error with no movies found message
+    if (movies.length === 0) res.status(404).json({ error: "No movies Found" });
+
+    // sending the result back to client
+    res.status(200).json({ totalMovies, totalPages, movies });
+  } catch (err) {
+    // logging the error
+    console.log(err.message);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -98,7 +139,7 @@ const getMovieUrls = async (req, res) => {
   } catch (err) {
     // logging the error
     console.error(err.message);
-    res.status(500).send("internal Server error");
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -119,8 +160,14 @@ const getMovieCast = async (req, res) => {
   } catch (err) {
     // logging the error
     console.error(err.message);
-    res.status(500).send("internal Server error");
+    res.status(500).send("Internal Server Error");
   }
 };
 
-module.exports = { getMovies, getMovie, getMovieUrls, getMovieCast };
+module.exports = {
+  getMovies,
+  getMovie,
+  getMovieUrls,
+  getMovieCast,
+  searchMovies,
+};

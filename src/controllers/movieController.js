@@ -25,10 +25,12 @@ const getMovies = async (req, res) => {
     const totalPages = Math.ceil(totalMovies / limit);
 
     // if no movie is found for the given send 404 no page found
-    if (movies.length === 0) res.status(404).send("Page not found");
-
-    // sending movies totalMovies and totalPageCount as a result to the client
-    res.status(200).json({ totalMovies, totalPages, movies });
+    if (movies.length === 0 || page > totalPages) {
+      res.status(404).send("Page not found");
+    } else {
+      // sending movies totalMovies and totalPageCount as a result to the client
+      res.status(200).json({ totalMovies, totalPages, movies });
+    }
   } catch (err) {
     // logging the error
     console.error(err.message);
@@ -99,10 +101,12 @@ const searchMovies = async (req, res) => {
     const totalPages = Math.ceil(totalMovies / limit);
 
     // if no movie is found for given title return a 404 error with no movies found message
-    if (movies.length === 0) res.status(404).json({ error: "No movies Found" });
-
-    // sending the result back to client
-    res.status(200).json({ totalMovies, totalPages, movies });
+    if (movies.length === 0 || page > totalPages) {
+      res.status(404).json({ error: "No movies Found" });
+    } else {
+      // sending the result back to client
+      res.status(200).json({ totalMovies, totalPages, movies });
+    }
   } catch (err) {
     // logging the error
     console.log(err.message);

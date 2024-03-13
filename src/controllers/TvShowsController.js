@@ -34,10 +34,13 @@ const getTvShows = async (req, res) => {
     const totalPages = Math.ceil(totalTvShows / limit);
 
     // if no tvshow is found for the given page send 404 no page found
-    if (tvShows.length === 0) res.status(404).send("Page Not Found");
 
-    // sending TvShows totalTvShows and totalPageCount as a result to the client
-    res.status(200).json({ totalTvShows, totalPages, tvShows });
+    if (tvShows.length === 0 || page > totalPages) {
+      res.status(404).send("Page Not Found");
+    } else {
+      // sending TvShows totalTvShows and totalPageCount as a result to the client
+      res.status(200).json({ totalTvShows, totalPages, tvShows });
+    }
   } catch (err) {
     // logging the error
     console.error(err.message);
@@ -116,11 +119,12 @@ const searchTvShows = async (req, res) => {
     const totalPages = Math.ceil(totalTvShows / limit);
 
     // if no tvShow is found for given title return a 404 error with no tvshows found message
-    if (tvShows.length === 0)
+    if (tvShows.length === 0 || page > totalPages) {
       res.status(404).json({ error: "No Tv Shows Found" });
-
-    // sending the result back to client
-    res.status(200).json({ totalTvShows, totalPages, tvShows });
+    } else {
+      // sending the result back to client
+      res.status(200).json({ totalTvShows, totalPages, tvShows });
+    }
   } catch (err) {
     // logging the error
     console.log(err.message);

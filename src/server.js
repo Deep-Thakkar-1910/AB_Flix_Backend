@@ -1,5 +1,6 @@
 const express = require("express");
 const movieRouter = require("./routes/MovieRoutes");
+const TvShowsRouter = require("./routes/TvShowsRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -12,6 +13,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/movies", movieRouter);
+
+app.use("/tvshows", TvShowsRouter);
 
 // listen for all the requests
 app.listen(process.env.PORT || PORT, () => {

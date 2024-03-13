@@ -6,7 +6,9 @@ const userSchema = new Schema(
     name: String,
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    watchlist: [{ type: mongoose.SchemaTypes.ObjectId }],
+    watchlist: [
+      { type: mongoose.SchemaTypes.ObjectId, ref: ["Movie", "TvShow"] },
+    ],
   },
   { timestamps: true }
 );

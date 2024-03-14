@@ -6,6 +6,7 @@ const userSchema = new Schema(
     name: String,
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImage: String,
     watchlist: [
       { type: mongoose.SchemaTypes.ObjectId, ref: ["Movie", "TvShow"] },
     ],

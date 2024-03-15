@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema(
     watchlist: [
       { type: mongoose.SchemaTypes.ObjectId, ref: ["Movie", "TvShow"] },
     ],
-    refreshTokens: String,
   },
   { timestamps: true }
 );

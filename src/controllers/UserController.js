@@ -11,7 +11,7 @@ const User = require("../models/Users");
 const handleRegister = async (req, res) => {
   try {
     //   extracting the username(email) and password from body object
-    const { name, email, password, profileImage } = req.body;
+    const { email, password, profileImage } = req.body;
 
     // defining zod validations for email and password;
     const emailSchema = z.string().email();
@@ -78,7 +78,6 @@ $ asserts the end of the string. */
 
     // saving the user in database
     const user = new User({
-      name,
       email,
       profileImage: profileImage ? profileImage : null,
       password: hashedPassword,

@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const z = require("zod");
 // importing dotenv config for accessing environment variables
 require("dotenv/config");
 
@@ -12,6 +12,54 @@ const handleRegister = async (req, res) => {
   try {
     //   extracting the username(email) and password from body object
     const { name, email, password, profileImage } = req.body;
+
+    // defining zod validations for email and password;
+    const emailSchema = z.string().email();
+
+    /* 
+
+    this regex below ensures that password has at least one lowercase letter, one uppercase letter,
+  one number, and one special character, with the password starting with an uppercase or lowercase letter:
+
+Explanation:
+
+^ asserts the start of the string.
+(?=.*[a-z]) ensures that there is at least one lowercase letter.
+(?=.*[A-Z]) ensures that there is at least one uppercase letter.
+(?=.*\d) ensures that there is at least one number.
+(?=.*[!@#$%^&*()\-_=+{};:,<.>]) ensures that there is at least one special character. You can adjust this character set as per your specific requirements.
+.{8,} ensures that the password is at least 8 characters long. You can adjust the minimum length as needed.
+$ asserts the end of the string. */
+
+    const passwordSchema = z
+      .string()
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,32}$/
+      );
+
+    // to parse the email and check if it meets confidtions defined above
+    const parsedEmail = emailSchema.safeParse(email);
+
+    //  if it fails validation send a 400 bad request error
+    if (!parsedEmail.success)
+      return res
+        .status(400)
+        .json({ success: false, message: "Not a valid email" });
+
+    // to parse the password and check if it meets confidtions defined above
+    const parsedPassword = passwordSchema.safeParse(password);
+
+    // defining a password error to show if password validation fails
+    const passwordError = `The password should have atleast:
+      1. An uppercase letter
+      2. A lowercase letter
+      3. A number and a special character`;
+
+    //  if it fails validation send a 400 bad request error
+    if (!parsedPassword.success)
+      return res
+        .status(400)
+        .json({ success: false, message: `${passwordError}` });
 
     // define a regex for email to perform an exactly matching case-Insenstive search
     const emailRegex = new RegExp(`^${email}$`, "i");

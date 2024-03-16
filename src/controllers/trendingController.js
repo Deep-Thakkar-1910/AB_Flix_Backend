@@ -1,6 +1,5 @@
 const db = require("../db/index");
-const fetch = require("node-fetch");
-
+const axios = require("axios");
 // importing dotenv config for accessing environment variables
 require("dotenv/config");
 
@@ -24,16 +23,16 @@ const needsUpdate = async () => {
 const updateTrendingCollection = async () => {
   const trendingUrl = "https://api.themoviedb.org/3/trending/all/week";
   const apiKey = process.env.TMDB_API_KEY;
-  const trendingResponse = await fetch(`${trendingUrl}?api_key=${apiKey}`);
-  const trendingData = await trendingResponse.json();
+  const trendingResponse = await axios.get(`${trendingUrl}?api_key=${apiKey}`);
+  const trendingData = trendingResponse.data;
   const trendingItems = trendingData.results;
 
   const detailsPromises = trendingItems.map(async (item) => {
     const mediaType = item.media_type;
     const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${item.id}/external_ids?api_key=${apiKey}`;
 
-    const detailsResponse = await fetch(detailsUrl);
-    const detailsData = await detailsResponse.json();
+    const detailsResponse = await axios.get(detailsUrl);
+    const detailsData = detailsResponse.data;
     const imdbId = detailsData.imdb_id;
 
     const collectionName = mediaType === "movie" ? "Movies" : "Shows";
@@ -77,7 +76,7 @@ const getTrending = async (req, res) => {
       )
       .toArray();
 
-    res.json(trendingItems);
+    res.status(200).json({ trendingItems });
   } catch (error) {
     console.error("Error in getTrending:", error);
     res.status(500).json({ message: error.message });

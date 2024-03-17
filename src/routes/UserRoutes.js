@@ -11,6 +11,7 @@ const {
   handleLogin,
   handleRegister,
   handleJwtLogin,
+  handleLogout,
 } = require("../controllers/UserController");
 
 // to create (Register) a new user
@@ -18,6 +19,9 @@ UserRouter.post("/register", handleRegister);
 
 // to login as an existing user
 UserRouter.post("/login", handleLogin);
+
+// to logout a user
+UserRouter.get("/logout", handleLogout);
 
 // to get details of a user using jwt for persistent login
 UserRouter.get("/details", authenticateJwt, handleJwtLogin);

@@ -167,6 +167,24 @@ const handleLogin = async (req, res) => {
   }
 };
 
+// handler function to logout the user and clear the http only cookie used as refresh token
+const handleLogout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.jwt) {
+    return res
+      .status(204)
+      .json({ success: false, message: "User not logged in" });
+  }
+
+  //  clearing the refresh token cookie from client side
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+
+  // sending response status 200 back to client by justifying the cookie has been cleared
+  res
+    .status(200)
+    .json({ success: true, message: "User logged out successfully" });
+};
+
 // handler function to get user detials using jwt access_token
 const handleJwtLogin = async (req, res) => {
   // extracting user email using user object from middleware
@@ -193,5 +211,6 @@ const handleJwtLogin = async (req, res) => {
 module.exports = {
   handleRegister,
   handleLogin,
+  handleLogout,
   handleJwtLogin,
 };

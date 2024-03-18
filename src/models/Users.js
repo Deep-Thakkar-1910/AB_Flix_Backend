@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
     password: { type: String, required: true },
-    profileImage: { type: String, required: false },
     watchlist: [
       { type: mongoose.SchemaTypes.ObjectId, ref: ["Movie", "TvShow"] },
     ],

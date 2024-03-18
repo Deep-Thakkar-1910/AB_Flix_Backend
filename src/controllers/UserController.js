@@ -11,7 +11,7 @@ const User = require("../models/Users");
 const handleRegister = async (req, res) => {
   try {
     //   extracting the username(email) and password from body object
-    const { email, password, profileImage } = req.body;
+    const { email, password } = req.body;
 
     // defining zod validations for email and password;
     const emailSchema = z.string().email();
@@ -79,7 +79,6 @@ $ asserts the end of the string. */
     // saving the user in database
     const user = new User({
       email,
-      profileImage: profileImage ? profileImage : null,
       password: hashedPassword,
       watchList: [],
     });
@@ -88,7 +87,6 @@ $ asserts the end of the string. */
     res.status(201).json({
       success: true,
       message: "User registered successfuly",
-      name,
       email: email,
     });
   } catch (err) {
@@ -196,7 +194,7 @@ const handleJwtLogin = async (req, res) => {
   // getting the user details from database
   const userDetails = await User.findOne(
     { email: { $regex: emailRegex } },
-    { _id: 0, email: 1, profileImage: 1, name: 1 }
+    { _id: 0, email: 1 }
   );
 
   // if no user is found return a 404 error

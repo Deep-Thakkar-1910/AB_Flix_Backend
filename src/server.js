@@ -4,7 +4,6 @@ const TvShowsRouter = require("./routes/TvShowsRoutes");
 const UserRouter = require("./routes/UserRoutes");
 const cookieParser = require("cookie-parser");
 const trendingRoutes = require("./routes/trendingRoutes");
-const corsOptions = require("./config/corsOptions");
 const cors = require("cors");
 const app = express();
 const PORT = 3000;
@@ -12,8 +11,8 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// enabling cors policy for the allowed origins
-app.use(cors(corsOptions));
+// enabling cors policy
+app.use(cors());
 
 // movie related routes
 app.use("/movies", movieRouter);

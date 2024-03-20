@@ -134,29 +134,9 @@ const handleLogin = async (req, res) => {
       { email: doesUserExist.email },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "900s", // NOTE: This evaulates to 15 mins
+        expiresIn: "1h", // NOTE: This evaulates to 1 hour
       }
     );
-
-    // creating a refresh_jwt token for refreshing the access tokens as they expire
-    const refreshToken = jwt.sign(
-      { email: doesUserExist.email },
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    //storing the refresh token onClient side as a http only cookie for 7 days
-    res.cookie("jwt", refreshToken, {
-      domain: ".onrender.com",
-      httpOnly: true,
-      maxAge: 168 * 60 * 60 * 1000,
-      sameSite: "None",
-      secure: true,
-      // NOTE: this evaluates to 7 days in milliseconds
-      //   after this period the user will have to re-Login for safety purposes
-    });
 
     // sending the success and accessToken as a response back to the client
     res.status(200).json({ success: true, accessToken });
@@ -170,7 +150,7 @@ const handleLogin = async (req, res) => {
   }
 };
 
-// handler function to logout the user and clear the http only cookie used as refresh token
+// handler function to logout the user
 const handleLogout = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies.jwt) {
@@ -179,15 +159,7 @@ const handleLogout = async (req, res) => {
       .json({ success: false, message: "User not logged in" });
   }
 
-  //  clearing the refresh token cookie from client side
-  res.clearCookie("jwt", {
-    domain: ".onrender.com",
-    httpOnly: false,
-    sameSite: "None",
-    secure: true,
-  });
-
-  // sending response status 200 back to client by justifying the cookie has been cleared
+  // sending response status 200 back to client
   res
     .status(200)
     .json({ success: true, message: "User logged out successfully" });

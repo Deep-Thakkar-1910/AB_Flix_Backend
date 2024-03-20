@@ -1,6 +1,5 @@
 const express = require("express");
 const UserRouter = express.Router();
-const handleRefreshToken = require("../controllers/RefreshTokenController");
 const authenticateJwt = require("../middlewares/authenticateJwtMiddleware");
 const {
   getUserWatchlist,
@@ -22,9 +21,6 @@ UserRouter.post("/login", handleLogin);
 
 // to logout a user
 UserRouter.get("/logout", handleLogout);
-
-// to get new accessToken using the refresh token
-UserRouter.get("/refresh", handleRefreshToken);
 
 // to get details of a user using jwt for persistent login
 UserRouter.get("/details", authenticateJwt, handleJwtLogin);

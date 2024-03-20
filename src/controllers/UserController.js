@@ -149,6 +149,7 @@ const handleLogin = async (req, res) => {
 
     //storing the refresh token onClient side as a http only cookie for 7 days
     res.cookie("jwt", refreshToken, {
+      domain: ".onrender.com",
       httpOnly: true,
       maxAge: 168 * 60 * 60 * 1000,
       sameSite: "None",
@@ -179,7 +180,12 @@ const handleLogout = async (req, res) => {
   }
 
   //  clearing the refresh token cookie from client side
-  res.clearCookie("jwt", { httpOnly: false, sameSite: "None", secure: true });
+  res.clearCookie("jwt", {
+    domain: ".onrender.com",
+    httpOnly: false,
+    sameSite: "None",
+    secure: true,
+  });
 
   // sending response status 200 back to client by justifying the cookie has been cleared
   res

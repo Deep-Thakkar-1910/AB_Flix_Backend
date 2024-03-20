@@ -7,7 +7,9 @@ const handleRefreshToken = async (req, res) => {
   // extracting the cookie from request object
   const cookies = req.cookies;
   if (!cookies?.jwt)
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res
+      .status(401)
+      .json({ success: false, message: "No Refresh Token Found" });
 
   //  extracting refreshToken from cookie
   const refreshToken = cookies.jwt;
@@ -15,7 +17,7 @@ const handleRefreshToken = async (req, res) => {
   //   verifying the jwt
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err)
-      return res.status(401).json({ success: false, message: "Unathorized" });
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     // making a new access token from user object verified from refresh token
     const accessToken = jwt.sign(
       { email: user.email },

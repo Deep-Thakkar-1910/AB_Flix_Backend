@@ -99,6 +99,7 @@ $ asserts the end of the string. */
   }
 };
 
+// handler function to login a user
 const handleLogin = async (req, res) => {
   try {
     //   extracting the username(email) and password from body object
@@ -149,7 +150,10 @@ const handleLogin = async (req, res) => {
     //storing the refresh token onClient side as a http only cookie for 7 days
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      maxAge: 168 * 60 * 60 * 1000, // NOTE: this evaluates to 7 days in milliseconds
+      maxAge: 168 * 60 * 60 * 1000,
+      sameSite: "None",
+      secure: true,
+      // NOTE: this evaluates to 7 days in milliseconds
       //   after this period the user will have to re-Login for safety purposes
     });
 
@@ -175,7 +179,7 @@ const handleLogout = async (req, res) => {
   }
 
   //  clearing the refresh token cookie from client side
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+  res.clearCookie("jwt", { httpOnly: false, sameSite: "None", secure: true });
 
   // sending response status 200 back to client by justifying the cookie has been cleared
   res

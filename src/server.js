@@ -7,6 +7,7 @@ const trendingRoutes = require("./routes/trendingRoutes");
 const allowCredentials = require("./middlewares/allowCredentials");
 const corsOptions = require("./config/corsOptions");
 const cors = require("cors");
+const mediaRouter = require("./routes/MediaRoute");
 const app = express();
 const PORT = 3000;
 
@@ -28,8 +29,8 @@ app.use("/tvshows", TvShowsRouter);
 // trending route to get trending movies and tv Shows from tmdb api
 app.use("/trending", trendingRoutes);
 
-// using cookieParser for user routes
-app.use(cookieParser());
+// combined route to get results for both movies and tvShows
+app.use("/media", mediaRouter);
 
 // user related routes
 app.use("/user", UserRouter);

@@ -9,7 +9,7 @@ const getMedia = async (req, res) => {
   const { title } = req.query;
 
   // defining the movie regex to perform case-insensitive search
-  const mediaRegex = new RegExp(`^${title}`, "i");
+  const mediaRegex = new RegExp(title, "i");
 
   const MovieResult = await Movies.find(
     { title: { $regex: mediaRegex } },

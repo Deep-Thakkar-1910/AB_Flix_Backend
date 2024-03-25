@@ -85,11 +85,6 @@ const getTvShow = async (req, res) => {
 // handler function to get tvshows based on search titles
 const searchTvShows = async (req, res) => {
   try {
-    // extracting the page number from query parameters
-    const page = req.query.page || 1;
-    const limit = 20;
-    const offset = parseInt(page - 1) * limit;
-
     // to extract the title from query params to search for
     const titleToGet = req.query.title;
     const titleRegex = new RegExp(titleToGet, "i");
@@ -106,24 +101,14 @@ const searchTvShows = async (req, res) => {
           type: 1,
         },
       }
-    )
-      .skip(offset)
-      .limit(limit)
-      .toArray();
-
-    // to get the total number of tvShows found using title query
-    const totalTvShowsCursor = await TvShows.find({
-      title: { $regex: titleRegex },
-    }).toArray();
-    const totalTvShows = totalTvShowsCursor.length;
-    const totalPages = Math.ceil(totalTvShows / limit);
+    ).toArray();
 
     // if no tvShow is found for given title return a 404 error with no tvshows found message
-    if (tvShows.length === 0 || page > totalPages) {
+    if (tvShows.length === 0) {
       res.status(404).json({ error: "No Tv Shows Found" });
     } else {
       // sending the result back to client
-      res.status(200).json({ totalTvShows, totalPages, tvShows });
+      res.status(200).json(tvShows);
     }
   } catch (err) {
     // logging the error

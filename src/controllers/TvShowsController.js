@@ -19,6 +19,7 @@ const getTvShows = async (req, res) => {
         projection: {
           title: 1,
           bannerUrl: 1,
+          posterUrl: 1,
           firstAirDate: 1,
           lastAirDate: 1,
           type: 1,
@@ -70,6 +71,7 @@ const getTvShow = async (req, res) => {
           language: 1,
           posterUrl: 1,
           status: 1,
+          type: 1,
         },
       }
     );
@@ -99,6 +101,7 @@ const searchTvShows = async (req, res) => {
           firstAirDate: 1,
           lastAirDate: 1,
           type: 1,
+          posterUrl: 1,
         },
       }
     ).toArray();

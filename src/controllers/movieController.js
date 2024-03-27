@@ -14,7 +14,15 @@ const getMovies = async (req, res) => {
     // getting movies as per the page number
     const movies = await Movies.find(
       {},
-      { projection: { title: 1, bannerUrl: 1, releaseDate: 1, type: 1 } }
+      {
+        projection: {
+          title: 1,
+          bannerUrl: 1,
+          releaseDate: 1,
+          type: 1,
+          posterUrl: 1,
+        },
+      }
     )
       .skip(offset)
       .limit(limit)
@@ -59,6 +67,7 @@ const getMovie = async (req, res) => {
           language: 1,
           posterUrl: 1,
           status: 1,
+          type: 1,
         },
       }
     );
@@ -81,7 +90,15 @@ const searchMovies = async (req, res) => {
     // to query the results using the newly created regex
     const movies = await Movies.find(
       { title: { $regex: titleRegex } },
-      { projection: { title: 1, bannerUrl: 1, releaseDate: 1, type: 1 } }
+      {
+        projection: {
+          title: 1,
+          bannerUrl: 1,
+          releaseDate: 1,
+          type: 1,
+          posterUrl: 1,
+        },
+      }
     ).toArray();
 
     // if no movie is found for given title return a 404 error with no movies found message
